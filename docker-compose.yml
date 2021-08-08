@@ -1,0 +1,7 @@
+version: '3'
+services:
+  backend:
+    build: .
+    image: hello-fastapi
+    ports:
+      - "8000:8000"
