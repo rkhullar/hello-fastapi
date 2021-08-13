@@ -1,9 +1,11 @@
 from enum import Enum
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 from typing import Optional
 from pydantic import BaseModel
 
 app = FastAPI()
+
+default_query_string = Query(default=None, min_length=3, max_length=50, regex=r'^\w+$')
 
 
 @app.get('/')
@@ -55,7 +57,7 @@ async def read_item(skip: int = 0, limit: int = 0):
 
 
 @app.get('/items/{item_id}')
-async def read_item(item_id: int, q: Optional[str] = None, short: bool = False):
+async def read_item(item_id: int, q: Optional[str] = default_query_string, short: bool = False):
     item = {'item_id': item_id}
     if q:
         item.update(q=q)
@@ -84,8 +86,8 @@ async def create_item(item: Item):
     return item_dict
 
 
-@app.post('/items/{item_id')
-async def create_item(item_id: int, item: Item, q: Optional[str] = None):
+@app.post('/items/{item_id}')
+async def create_item(item_id: int, item: Item, q: Optional[str] = default_query_string):
     item_dict = {'item_id': item_id, **item.dict()}
     if q:
         item_dict['q'] = q
