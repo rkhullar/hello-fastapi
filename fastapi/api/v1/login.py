@@ -1,12 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from pydantic import BaseModel
-from typing import Optional
-from jose import jwt, JWTError
 import datetime as dt
 import os
+from typing import Optional
+
+from jose import JWTError, jwt
+from pydantic import BaseModel
 from util.hash import build_json_hash
 
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
 SECRET_KEY = os.environ['SECRET_KEY']
 SESSION_DURATION = 30  # minutes

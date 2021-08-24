@@ -11,6 +11,7 @@ python-multipart = "~=0.0.0"
 python-jose = "~=3.3.0"
 
 [dev-packages]
+isort = "~=5.9.0"
 
 [requires]
 python_version = "3.8"

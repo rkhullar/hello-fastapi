@@ -1,8 +1,8 @@
-import hashlib
 import base64
+import hashlib
+import json
 import random
 import string
-import json
 
 default_algorithm = 'blake2b'
 default_encoding = 'utf-8'
