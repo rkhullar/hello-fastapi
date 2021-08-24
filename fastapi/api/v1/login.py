@@ -4,10 +4,11 @@ from typing import Optional
 
 from jose import JWTError, jwt
 from pydantic import BaseModel
-from util.hash import build_json_hash
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+
+from ..util.hash import build_json_hash
 
 SECRET_KEY = os.environ['SECRET_KEY']
 SESSION_DURATION = 30  # minutes
@@ -31,7 +32,7 @@ class UserInDB(User):
 
 
 fake_users_db = {
-    'person': UserInDB(username='person', full_name='Person Test', email='noreply@example.com', hashed_password='vALXtyEJwIc8BK4Rqm8pi7NXJ6WWlitZdD78JanTOQkK7UPcRpEJL3YQt6PL7nXDtcxGg2NqkEP7DgVF7L5ACQ==', salt='bFIP5irOtSG7Jreu', disabled=True)
+    'person': UserInDB(username='person', full_name='Person Test', email='noreply@example.com', hashed_password='vALXtyEJwIc8BK4Rqm8pi7NXJ6WWlitZdD78JanTOQkK7UPcRpEJL3YQt6PL7nXDtcxGg2NqkEP7DgVF7L5ACQ==', salt='bFIP5irOtSG7Jreu')
 }
 
 
