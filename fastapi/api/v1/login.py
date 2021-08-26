@@ -14,6 +14,9 @@ SECRET_KEY = os.environ['SECRET_KEY']
 SESSION_DURATION = 30  # minutes
 JWT_ALGORITHM = 'HS256'
 
+REGULAR_USER_HASHED_PASSWORD = os.environ['REGULAR_USER_HASHED_PASSWORD']
+REGULAR_USER_SALT = os.environ['REGULAR_USER_SALT']
+
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='./api/v1/login')
 
 router = APIRouter()
@@ -32,7 +35,7 @@ class UserInDB(User):
 
 
 fake_users_db = {
-    'person': UserInDB(username='person', full_name='Person Test', email='noreply@example.com', hashed_password='vALXtyEJwIc8BK4Rqm8pi7NXJ6WWlitZdD78JanTOQkK7UPcRpEJL3YQt6PL7nXDtcxGg2NqkEP7DgVF7L5ACQ==', salt='bFIP5irOtSG7Jreu')
+    'person': UserInDB(username='person', full_name='Person Test', email='noreply@example.com', hashed_password=REGULAR_USER_HASHED_PASSWORD, salt=REGULAR_USER_SALT)
 }
 
 
