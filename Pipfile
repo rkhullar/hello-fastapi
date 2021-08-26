@@ -7,8 +7,11 @@ name = "pypi"
 fastapi = "~=0.68.0"
 uvicorn = "~=0.14.0"
 pydantic = "~=1.8.0"
+python-multipart = "~=0.0.0"
+python-jose = "~=3.3.0"
 
 [dev-packages]
+isort = "~=5.9.0"
 
 [requires]
 python_version = "3.8"
