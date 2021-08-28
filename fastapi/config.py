@@ -1,4 +1,5 @@
 from pydantic import BaseSettings
+from typing import List
 import os
 
 
@@ -18,7 +19,13 @@ class SecuritySettings(BaseSettings):
 
 
 class MongoSettings(BaseSettings):
-    pass
+    mongo_db_names: List[str] = ['default']
+    mongo_host: str
+    mongo_user: str
+
+    @property
+    def mongo_uri(self) -> str:
+        return ''
 
 
 class Settings(ProjectSettings, NetworkSettings, SecuritySettings, MongoSettings):
