@@ -5,3 +5,7 @@ services:
     image: hello-fastapi
     ports:
       - "8000:8000"
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+      - REGULAR_USER_HASHED_PASSWORD=${REGULAR_USER_HASHED_PASSWORD}
+      - REGULAR_USER_SALT=${REGULAR_USER_SALT}
