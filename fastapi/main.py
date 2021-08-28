@@ -1,10 +1,9 @@
 from factory import create_app
 import uvicorn
-import os
+from config import Settings
 
-environment = os.getenv('ENVIRONMENT', 'tbd')
-debug = bool(os.getenv('DEBUG', 0))
-app = create_app(environment=environment)
+settings = Settings()
+app = create_app(settings)
 
 if __name__ == '__main__':
-    uvicorn.run('main:app', host='0.0.0.0', port=8000, reload=debug)
+    uvicorn.run('main:app', host=settings.service_host, port=settings.service_port, reload=settings.debug)
