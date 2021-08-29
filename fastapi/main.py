@@ -1,6 +1,7 @@
-from factory import create_app
 import uvicorn
+
 from config import Settings
+from factory import create_app
 
 settings = Settings()
 app = create_app(settings)

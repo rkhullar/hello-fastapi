@@ -1,6 +1,7 @@
-from pydantic import BaseSettings
-from typing import List
 import os
+from typing import List
+
+from pydantic import BaseSettings
 
 
 class ProjectSettings(BaseSettings):
@@ -23,10 +24,12 @@ class MongoSettings(BaseSettings):
     mongo_host: str = os.getenv('MONGO_HOST')
     mongo_username: str = os.getenv('MONGO_USERNAME')
     mongo_password: str = os.getenv('MONGO_PASSWORD')
+    mongo_scheme: str = 'mongodb+srv'
 
     @property
     def mongo_uri(self) -> str:
-        return f'mongodb+srv://{self.mongo_username}:{self.mongo_password}@{self.mongo_host}/default?retryWrites=true&w=majority'
+        base_uri = f'{self.mongo_scheme}://{self.mongo_username}:{self.mongo_password}@{self.mongo_host}'
+        return f'{base_uri}/default?retryWrites=true&w=majority'
 
 
 class Settings(ProjectSettings, NetworkSettings, SecuritySettings, MongoSettings):
