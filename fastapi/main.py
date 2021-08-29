@@ -1,12 +1,10 @@
-from api import router as api_router
+import uvicorn
 
-from fastapi import FastAPI
+from config import Settings
+from factory import create_app
 
-app = FastAPI()
-
-app.include_router(api_router, prefix='/api')
-
+settings = Settings()
+app = create_app(settings)
 
 if __name__ == '__main__':
-    import uvicorn
-    uvicorn.run('main:app', host='0.0.0.0', port=8000, reload=True)
+    uvicorn.run('main:app', host=settings.service_host, port=settings.service_port, reload=settings.debug)
