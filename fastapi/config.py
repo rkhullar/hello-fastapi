@@ -20,12 +20,13 @@ class SecuritySettings(BaseSettings):
 
 class MongoSettings(BaseSettings):
     mongo_db_names: List[str] = ['default']
-    mongo_host: str
-    mongo_user: str
+    mongo_host: str = os.getenv('MONGO_HOST')
+    mongo_username: str = os.getenv('MONGO_USERNAME')
+    mongo_password: str = os.getenv('MONGO_PASSWORD')
 
     @property
     def mongo_uri(self) -> str:
-        return ''
+        return f'mongodb+srv://{self.mongo_username}:{self.mongo_password}@{self.mongo_host}/default?retryWrites=true&w=majority'
 
 
 class Settings(ProjectSettings, NetworkSettings, SecuritySettings, MongoSettings):
