@@ -5,3 +5,8 @@ services:
     image: hello-fastapi
     ports:
       - "8000:8000"
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+      - MONGO_HOST=${MONGO_HOST}
+      - MONGO_USERNAME=${MONGO_USERNAME}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
