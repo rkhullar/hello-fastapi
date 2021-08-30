@@ -42,18 +42,16 @@ def authenticate_user(username: str, password: str) -> Optional[UserInDB]:
 
 async def get_current_user(token: str = Depends(oauth2_scheme)) -> UserInDB:
     to_raise = HTTPException(status_code=401, detail='could not validate token')
-    try:
-        payload = jwt.decode(token=token, key=SECRET_KEY, algorithms=[JWT_ALGORITHM])
+    payload = await parse_access_token(token)
+    if payload:
         identity = payload['sub']
         _type, name = identity.split(':')
         if _type != 'username':
             raise to_raise
-    except JWTError:
-        raise to_raise
-    user = UserInDB.get(username=name)
-    if not user:
-        raise to_raise
-    return user
+        user = UserInDB.get(username=name)
+        if not user:
+            raise to_raise
+        return user
 
 
 async def get_current_active_user(current_user: User = Depends(get_current_user)):
@@ -62,10 +60,19 @@ async def get_current_active_user(current_user: User = Depends(get_current_user)
     return current_user
 
 
-def create_access_token(data: dict, duration: dt.timedelta, expiration_key: str = 'exp') -> str:
+async def create_access_token(data: dict, duration: dt.timedelta, expiration_key: str = 'exp') -> str:
     expiration = dt.datetime.utcnow() + duration
     to_encode = dict(data, **{expiration_key: expiration})
     return jwt.encode(claims=to_encode, key=SECRET_KEY, algorithm=JWT_ALGORITHM)
+
+
+async def parse_access_token(token: str, raise_error: bool = False) -> dict:
+    # TODO: check that token expiration is enforced
+    try:
+        return jwt.decode(token=token, key=SECRET_KEY, algorithms=[JWT_ALGORITHM])
+    except JWTError as err:
+        if raise_error:
+            raise err
 
 
 @router.post('/login')
@@ -73,8 +80,8 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     user = authenticate_user(username=form_data.username, password=form_data.password)
     if not user:
         raise HTTPException(status_code=401, detail='incorrect username or password')
-    access_token = create_access_token(data={'sub': f'username:{user.username}'},
-                                       duration=dt.timedelta(minutes=SESSION_DURATION))
+    access_token = await create_access_token(data={'sub': f'username:{user.username}'},
+                                             duration=dt.timedelta(minutes=SESSION_DURATION))
     return {'access_token': access_token, 'token_type': 'bearer'}
 
 
