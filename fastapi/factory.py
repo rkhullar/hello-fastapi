@@ -1,7 +1,7 @@
 import mongoengine
-
 from api import router as api_router
 from config import Settings
+
 from fastapi import FastAPI
 
 

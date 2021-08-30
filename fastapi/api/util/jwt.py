@@ -1,6 +1,7 @@
-from dataclasses import dataclass
-from jose import JWTError, jwt
 import datetime as dt
+from dataclasses import dataclass
+
+from jose import JWTError, jwt
 
 
 @dataclass
@@ -22,22 +23,8 @@ class TokenFactory:
 
     async def parse(self, token: str, raise_error: bool = False) -> TokenData:
         try:
-            # TODO: check that token expiration is enforced
             payload = jwt.decode(token=token, key=self.secret_key, algorithms=[self.algorithm])
             return TokenData(sub=payload['sub'], exp=dt.datetime.fromtimestamp(payload['exp']))
         except JWTError as err:
             if raise_error:
                 raise err
-
-
-async def main():
-    factory = TokenFactory(secret_key='abcdwxyz')
-    token = await factory.build(dict(sub='person'))
-    print(token)
-    data = await factory.parse(token)
-    print(data)
-
-
-if __name__ == '__main__':
-    import asyncio
-    asyncio.run(main())
