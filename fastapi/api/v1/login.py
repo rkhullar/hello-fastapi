@@ -11,6 +11,7 @@ from ..util.hash import build_json_hash
 from ..util.jwt import TokenFactory
 
 SECRET_KEY = os.environ['SECRET_KEY']
+# TODO: read from app settings
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='./api/v1/login')
 token_factory = TokenFactory(secret_key=os.environ['SECRET_KEY'])
