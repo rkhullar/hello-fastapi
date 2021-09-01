@@ -3,7 +3,7 @@ from typing import Optional
 from mongoengine import Document
 from mongoengine.fields import BooleanField, StringField
 
-from ..util.mongo import document_extras
+from ..core.util import document_extras
 
 
 @document_extras

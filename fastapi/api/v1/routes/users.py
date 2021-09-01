@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-from ..model import User as UserInDB
-from .login import User
+from ...model import User as UserInDB
+from ..schema import User
 
 router = APIRouter()
 

@@ -5,10 +5,9 @@ from pydantic import BaseModel
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
-from ..config import Settings
-from ..model import User as UserInDB
-from ..util.hash import build_json_hash
-from ..util.jwt import TokenFactory
+from ...core.config import Settings
+from ...core.util import TokenFactory, build_json_hash
+from ...model import User as UserInDB
 
 router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='./api/v1/login')
