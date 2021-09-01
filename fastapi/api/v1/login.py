@@ -1,9 +1,8 @@
-import os
 from typing import Optional
 
 from pydantic import BaseModel
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
 from ..config import Settings
@@ -25,17 +24,18 @@ class User(BaseModel):
         orm_mode = True
 
 
-async def get_token_factory(settings: Settings = Depends()) -> TokenFactory:
+async def get_token_factory(request: Request) -> TokenFactory:
+    settings: Settings = request.app.extra['settings']
     return TokenFactory(secret_key=settings.secret_key)
 
 
-def verify_password(plain_password: str, hashed_password: str, salt: str) -> bool:
+async def verify_password(plain_password: str, hashed_password: str, salt: str) -> bool:
     return build_json_hash(data={'password': plain_password}, salt=salt) == hashed_password
 
 
-def authenticate_user(username: str, password: str) -> Optional[UserInDB]:
+async def authenticate_user(username: str, password: str) -> Optional[UserInDB]:
     user = UserInDB.get(username=username)
-    if user and verify_password(plain_password=password, hashed_password=user.hashed_password, salt=user.salt):
+    if user and await verify_password(plain_password=password, hashed_password=user.hashed_password, salt=user.salt):
         return user
 
 
@@ -61,7 +61,7 @@ async def get_current_active_user(current_user: User = Depends(get_current_user)
 
 @router.post('/login')
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), token_factory: TokenFactory = Depends(get_token_factory)):
-    user = authenticate_user(username=form_data.username, password=form_data.password)
+    user = await authenticate_user(username=form_data.username, password=form_data.password)
     if not user:
         raise HTTPException(status_code=401, detail='incorrect username or password')
     access_token = await token_factory.build(data={'sub': f'username:{user.username}'})
@@ -71,3 +71,8 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), token_factory:
 @router.get('/me', response_model=User)
 async def read_current_user(current_user: User = Depends(get_current_active_user)):
     return current_user
+
+
+# @router.get('/test')
+# async def test(request: Request):
+#     return request.app.extra['settings']
