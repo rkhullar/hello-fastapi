@@ -28,8 +28,8 @@ class MongoSettings(BaseSettings):
 
     @property
     def mongo_uri(self) -> str:
-        base_uri = f'{self.mongo_scheme}://{self.mongo_username}:{self.mongo_password}@{self.mongo_host}'
-        return f'{base_uri}/default?retryWrites=true&w=majority'
+        base_url = f'{self.mongo_scheme}://{self.mongo_username}:{self.mongo_password}@{self.mongo_host}'
+        return f'{base_url}/default?retryWrites=true&w=majority'
 
 
 class Settings(ProjectSettings, NetworkSettings, SecuritySettings, MongoSettings):

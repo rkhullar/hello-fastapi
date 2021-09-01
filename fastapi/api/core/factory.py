@@ -1,8 +1,9 @@
 import mongoengine
 
-from api import router as api_router
-from config import Settings
 from fastapi import FastAPI
+
+from ..router import router as api_router
+from .config import Settings
 
 
 def link_mongo(settings: Settings):
@@ -11,7 +12,7 @@ def link_mongo(settings: Settings):
 
 
 def create_app(settings: Settings) -> FastAPI:
-    app = FastAPI()
+    app = FastAPI(settings=settings)
     app.include_router(api_router, prefix='/api')
     link_mongo(settings)
     return app
