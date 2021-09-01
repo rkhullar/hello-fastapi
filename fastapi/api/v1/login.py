@@ -71,8 +71,3 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), token_factory:
 @router.get('/me', response_model=User)
 async def read_current_user(current_user: User = Depends(get_current_active_user)):
     return current_user
-
-
-# @router.get('/test')
-# async def test(request: Request):
-#     return request.app.extra['settings']
