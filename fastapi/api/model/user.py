@@ -1,7 +1,7 @@
-from typing import Optional
+from typing import List, Optional
 
 from mongoengine import Document
-from mongoengine.fields import BooleanField, StringField
+from mongoengine.fields import BooleanField, ListField, StringField
 
 from ..core.util import document_extras
 
@@ -9,9 +9,10 @@ from ..core.util import document_extras
 @document_extras
 class User(Document):
     username: str = StringField(required=True, unique=True)
-    email: Optional[str] = StringField()
-    full_name: Optional[str] = StringField()
+    email: Optional[str] = StringField(required=True, unique=True)
+    full_name: Optional[str] = StringField(required=True)
     disabled: Optional[bool] = BooleanField()
+    scopes: List[str] = ListField(StringField())
     hashed_password: str = StringField(required=True)
     salt: str = StringField(required=True)
 
