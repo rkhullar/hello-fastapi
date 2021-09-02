@@ -19,3 +19,9 @@ class User(Document):
     meta = {
         'indexes': ['username']
     }
+
+    def add_scope(self, scope: str):
+        self.update(add_to_set__scopes=scope)
+
+    def del_scope(self, scope: str):
+        self.update(pull__scopes=scope)
