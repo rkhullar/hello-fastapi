@@ -12,7 +12,7 @@ class User(Document):
     email: Optional[str] = StringField(required=True, unique=True)
     full_name: Optional[str] = StringField(required=True)
     disabled: Optional[bool] = BooleanField()
-    scopes: List[str] = ListField(StringField())
+    roles: List[str] = ListField(StringField())
     hashed_password: str = StringField(required=True)
     salt: str = StringField(required=True)
 
@@ -20,8 +20,8 @@ class User(Document):
         'indexes': ['username']
     }
 
-    def add_scope(self, scope: str):
-        self.update(add_to_set__scopes=scope)
+    def add_role(self, role: str):
+        self.update(add_to_set__roles=role)
 
-    def del_scope(self, scope: str):
-        self.update(pull__scopes=scope)
+    def del_role(self, role: str):
+        self.update(pull__roles=role)

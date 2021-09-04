@@ -8,7 +8,7 @@ class User(BaseModel):
     email: str
     full_name: str
     disabled: Optional[bool] = None
-    scopes: Optional[List[str]] = None
+    roles: Optional[List[str]] = None
 
     class Config:
         orm_mode = True

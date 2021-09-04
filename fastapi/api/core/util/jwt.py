@@ -1,5 +1,6 @@
 import datetime as dt
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from typing import List
 
 from jose import JWTError, jwt
 
@@ -8,6 +9,7 @@ from jose import JWTError, jwt
 class TokenData:
     sub: str
     exp: dt.datetime
+    scopes: List[str] = field(default_factory=list)
 
 
 @dataclass

@@ -3,7 +3,7 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 
-from ...core.util import TokenFactory, build_json_hash
+from ...core.util import HashFactory, TokenFactory
 from ...model import User as UserInDB
 from ..depends import get_current_active_user, get_token_factory
 from ..schema import Token, User
@@ -12,7 +12,7 @@ router = APIRouter()
 
 
 async def verify_password(plain_password: str, hashed_password: str, salt: str) -> bool:
-    return build_json_hash(data={'password': plain_password}, salt=salt) == hashed_password
+    return HashFactory().hash_data(password=plain_password, salt=salt) == hashed_password
 
 
 async def authenticate_user(username: str, password: str) -> Optional[UserInDB]:
