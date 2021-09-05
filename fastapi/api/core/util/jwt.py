@@ -1,5 +1,5 @@
 import datetime as dt
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
 from typing import List
 
 from jose import JWTError, jwt
@@ -18,10 +18,13 @@ class TokenFactory:
     duration = 30  # minutes
     algorithm: str = 'HS256'
 
-    async def build(self, data: dict) -> str:
-        expiration = dt.datetime.utcnow() + dt.timedelta(minutes=self.duration)
-        to_encode = dict(exp=expiration, **data)
-        return jwt.encode(claims=to_encode, key=self.secret_key, algorithm=self.algorithm)
+    async def build(self, sub: str, scopes: List[str] = None) -> str:
+        token_data = TokenData(
+            sub=sub,
+            exp=dt.datetime.utcnow() + dt.timedelta(minutes=self.duration),
+            scopes=scopes or list()
+        )
+        return jwt.encode(claims=asdict(token_data), key=self.secret_key, algorithm=self.algorithm)
 
     async def parse(self, token: str, raise_error: bool = False) -> TokenData:
         try:
