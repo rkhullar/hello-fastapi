@@ -28,8 +28,9 @@ class TokenFactory:
 
     async def parse(self, token: str, raise_error: bool = False) -> TokenData:
         try:
-            payload = jwt.decode(token=token, key=self.secret_key, algorithms=[self.algorithm])
-            return TokenData(sub=payload['sub'], exp=dt.datetime.fromtimestamp(payload['exp']))
+            payload: dict = jwt.decode(token=token, key=self.secret_key, algorithms=[self.algorithm])
+            raw_exp: int = payload.pop('exp')
+            return TokenData(**payload, exp=dt.datetime.fromtimestamp(raw_exp))
         except JWTError as err:
             if raise_error:
                 raise err

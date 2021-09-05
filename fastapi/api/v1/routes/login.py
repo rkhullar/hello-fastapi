@@ -14,7 +14,8 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), token_factory:
     user = UserInDB.authenticate(username=form_data.username, password=form_data.password)
     if not user:
         raise HTTPException(status_code=401, detail='incorrect username or password')
-    access_token = await token_factory.build(sub=f'username:{user.username}')
+    # NOTE: user.roles has a mongoengine BaseList type; that doesn't work with dataclass asdict
+    access_token = await token_factory.build(sub=f'username:{user.username}', scopes=list(user.roles))
     return {'access_token': access_token, 'token_type': 'bearer'}
 
 
