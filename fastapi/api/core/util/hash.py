@@ -4,6 +4,7 @@ import json
 import random
 import string
 from dataclasses import dataclass
+from .dict import parse_dict_args
 
 
 @dataclass
@@ -18,13 +19,9 @@ class HashFactory:
         raw_digest = hash_object.digest()
         return base64.b64encode(raw_digest).decode(self.encoding)
 
-    def hash_data(self, data: dict = None, salt: str = None, **extra):
-        to_hash = dict()
-        to_hash.update(data or dict())
-        to_hash.update(extra)
-        if salt:
-            to_hash['salt'] = salt
-        json_str = json.dumps(to_hash, sort_keys=True, separators=(',', ':'))
+    def hash_data(self, *args, **kwargs):
+        data = parse_dict_args(*args, **kwargs)
+        json_str = json.dumps(data, sort_keys=True, separators=(',', ':'))
         return self.hash_text(json_str)
 
     def build_salt(self, size: int = 16) -> str:
