@@ -4,7 +4,6 @@ import json
 import random
 import string
 from dataclasses import dataclass
-from .dict import parse_dict_args
 
 
 @dataclass
@@ -19,8 +18,7 @@ class HashFactory:
         raw_digest = hash_object.digest()
         return base64.b64encode(raw_digest).decode(self.encoding)
 
-    def hash_data(self, *args, **kwargs):
-        data = parse_dict_args(*args, **kwargs)
+    def hash_data(self, **data):
         json_str = json.dumps(data, sort_keys=True, separators=(',', ':'))
         return self.hash_text(json_str)
 
