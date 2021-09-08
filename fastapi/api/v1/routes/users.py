@@ -1,13 +1,12 @@
-from fastapi import APIRouter, Security
+from fastapi import APIRouter
 from typing import List
 
 from ...model import User as UserInDB
 from ..schema import User
-from ..depends import get_current_active_user
 
 router = APIRouter()
 
 
 @router.get('/', response_model=List[User])
-async def list_users(current_user: User = Security(get_current_active_user, scopes=['hello'])):
+async def list_users():
     return [UserInDB.get(username='groundx14')]
