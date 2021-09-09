@@ -2,7 +2,7 @@ from fastapi import Depends, HTTPException, Request
 from fastapi.security import OAuth2PasswordBearer
 
 from ..core.config import Settings
-from ..core.util import TokenFactory
+from ..core.util import TokenData, TokenFactory
 from ..model import User
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='./api/v1/login')
@@ -11,6 +11,10 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl='./api/v1/login')
 async def get_token_factory(request: Request) -> TokenFactory:
     settings: Settings = request.app.extra['settings']
     return TokenFactory(secret_key=settings.secret_key)
+
+
+async def get_token_data(token: str = Depends(oauth2_scheme), token_factory: TokenFactory = Depends(get_token_factory)) -> TokenData:
+    return await token_factory.parse(token)
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme), token_factory: TokenFactory = Depends(get_token_factory)) -> User:
