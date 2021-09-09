@@ -20,9 +20,8 @@ async def get_token_data(token: str = Depends(oauth2_scheme), token_factory: Tok
     return await token_factory.parse(token)
 
 
-async def get_current_user(token: str = Depends(oauth2_scheme), token_factory: TokenFactory = Depends(get_token_factory)) -> User:
+async def get_current_user(token_data: TokenData = Depends(get_token_data)) -> User:
     to_raise = HTTPException(status_code=401, detail='could not validate token')
-    token_data = await token_factory.parse(token)
     if token_data:
         identity = token_data.sub
         _type, name = identity.split(':')
