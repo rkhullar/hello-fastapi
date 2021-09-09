@@ -1,8 +1,9 @@
 from typing import Callable, List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import Depends, HTTPException
 from fastapi.routing import APIRoute
 
+from ...core.router import APIRouter
 from ...core.util import TokenData
 from ...model import User as UserInDB
 from ..depends import get_token_data

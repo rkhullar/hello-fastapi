@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 
+from ...core.router import APIRouter
 from ...core.util import TokenFactory
 from ...model import User as UserInDB
 from ..depends import get_current_active_user, get_token_factory
