@@ -8,7 +8,7 @@ class APIRouter(DefaultRouter):
         def decorator(fn):
             parent_decorator(fn)
             fn.api_route = self.routes[-1]
-            assert fn.__qualname__ == fn.api_route.endpoint.__qualname__
+            assert fn == fn.api_route.endpoint
             return fn
 
         return decorator

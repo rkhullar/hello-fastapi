@@ -1,3 +1,6 @@
+from dataclasses import dataclass
+from typing import Tuple
+
 from fastapi import Depends, HTTPException, Request
 from fastapi.security import OAuth2PasswordBearer
 
@@ -35,3 +38,21 @@ async def get_current_active_user(current_user: User = Depends(get_current_user)
     if current_user.disabled:
         raise HTTPException(status_code=400, detail='inactive user')
     return current_user
+
+
+@dataclass(frozen=True)
+class AllowedScopes:
+    scopes: Tuple[str]
+
+    def __call__(self, token_data: TokenData = Depends(get_token_data)):
+        # TODO: verify logic
+        if not set(self.scopes).intersection(token_data.scopes):
+            raise HTTPException(status_code=403, detail='forbidden')
+
+
+def allowed_scopes(*scopes: str):
+    def decorator(fn):
+        dependency = Depends(AllowedScopes(scopes))
+        fn.api_route.dependencies.append(dependency)
+        return fn
+    return decorator
