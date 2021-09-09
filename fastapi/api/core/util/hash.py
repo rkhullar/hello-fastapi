@@ -3,26 +3,24 @@ import hashlib
 import json
 import random
 import string
-
-default_algorithm = 'blake2b'
-default_encoding = 'utf-8'
-default_char_space = string.ascii_lowercase + string.ascii_uppercase + string.digits
+from dataclasses import dataclass
 
 
-def build_text_hash(text: str, algorithm: str = default_algorithm, encoding: str = default_encoding) -> str:
-    hash_object = hashlib.new(algorithm)
-    hash_object.update(text.encode(encoding))
-    raw_digest = hash_object.digest()
-    return base64.b64encode(raw_digest).decode(encoding)
+@dataclass
+class HashFactory:
+    algorithm: str = 'blake2b'
+    encoding: str = 'utf-8'
+    char_space: str = string.ascii_lowercase + string.ascii_uppercase + string.digits
 
+    def hash_text(self, text: str) -> str:
+        hash_object = hashlib.new(self.algorithm)
+        hash_object.update(text.encode(self.encoding))
+        raw_digest = hash_object.digest()
+        return base64.b64encode(raw_digest).decode(self.encoding)
 
-def build_json_hash(data: dict, salt: str = None, algorithm: str = default_algorithm, encoding: str = default_encoding):
-    to_hash = dict(data)
-    if salt:
-        to_hash['salt'] = salt
-    json_str = json.dumps(to_hash, sort_keys=True, separators=(',', ':'))
-    return build_text_hash(json_str, algorithm=algorithm, encoding=encoding)
+    def hash_data(self, **data):
+        json_str = json.dumps(data, sort_keys=True, separators=(',', ':'))
+        return self.hash_text(json_str)
 
-
-def build_salt(size: int = 16, char_space: str = default_char_space) -> str:
-    return ''.join(random.choice(char_space) for _ in range(size))
+    def build_salt(self, size: int = 16) -> str:
+        return ''.join(random.choice(self.char_space) for _ in range(size))

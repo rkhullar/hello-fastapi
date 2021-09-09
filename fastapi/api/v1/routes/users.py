@@ -1,11 +1,14 @@
-from fastapi import APIRouter
+from typing import List
 
+from ...core.router import APIRouter
 from ...model import User as UserInDB
+from ..depends import allowed_scopes
 from ..schema import User
 
 router = APIRouter()
 
 
-@router.get('/test', response_model=User)
-async def test_user():
-    return UserInDB.get(username='person')
+@allowed_scopes('admin')
+@router.get('/', response_model=List[User])
+async def list_users():
+    return list(UserInDB.objects.all())
