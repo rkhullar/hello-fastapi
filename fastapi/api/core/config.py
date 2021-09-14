@@ -1,12 +1,12 @@
 import os
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseSettings
 
 
 class ProjectSettings(BaseSettings):
     project: str = os.getenv('PROJECT', 'hello-fastapi')
-    environment: str = os.getenv('ENVIRONMENT')
+    environment: Optional[str] = os.getenv('ENVIRONMENT')
     debug = bool(os.getenv('DEBUG', 0))
 
 

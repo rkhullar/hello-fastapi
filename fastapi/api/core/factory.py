@@ -11,8 +11,9 @@ def link_mongo(settings: Settings):
         mongoengine.connect(db=name, alias=name, host=settings.mongo_uri, connect=False)
 
 
-def create_app(settings: Settings) -> FastAPI:
+def create_app(settings: Settings, test: bool = False) -> FastAPI:
     app = FastAPI(settings=settings)
     app.include_router(api_router, prefix='/api')
-    link_mongo(settings)
+    if not test:
+        link_mongo(settings)
     return app
