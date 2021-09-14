@@ -1,4 +1,4 @@
-FROM python:3.8.11-alpine
+FROM python:3.8.12-alpine
 WORKDIR /root
 COPY Pipfile ./
 RUN pip install pipenv                   \
