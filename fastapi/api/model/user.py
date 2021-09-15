@@ -45,3 +45,9 @@ class User(Document):
         user = cls.get(username=username)
         if user and user.verify_password(plain_password=password):
             return user
+
+    @classmethod
+    def create_with_password(cls, plain_password: str, **kwargs) -> 'User':
+        hashed_password, salt = cls.build_password_and_salt(plain_password=plain_password)
+        kwargs.update(dict(hashed_password=hashed_password, salt=salt))
+        return cls.create(**kwargs)
