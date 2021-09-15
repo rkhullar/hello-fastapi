@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from mongoengine import Document
 from mongoengine.fields import BooleanField, ListField, StringField
@@ -25,6 +25,17 @@ class User(Document):
 
     def del_role(self, role: str):
         self.update(pull__roles=role)
+
+    @staticmethod
+    def build_password_and_salt(plain_password: str) -> Tuple[str, str]:
+        hash_factory = HashFactory()
+        salt = hash_factory.build_salt()
+        hashed_password = hash_factory.hash_data(password=plain_password, salt=salt)
+        return hashed_password, salt
+
+    def update_password(self, plain_password: str):
+        hashed_password, salt = self.build_password_and_salt(plain_password)
+        return self.update(set__hashed_password=hashed_password, set__salt=salt)
 
     def verify_password(self, plain_password: str) -> bool:
         return HashFactory().hash_data(password=plain_password, salt=self.salt) == self.hashed_password
